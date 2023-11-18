@@ -24,18 +24,18 @@ android {
 
     signingConfigs {
         release {
-            keyAlias 'key0'
-            keyPassword '1234566'
-            storeFile file('../key.jks')
-            storePassword '1234566'
+            keyAlias 'aa'
+            keyPassword 'aaaaaa'
+            storeFile file('../aa.jks')
+            storePassword 'aaaaaa'
             v1SigningEnabled true
             v2SigningEnabled true
         }
         debug {
-            keyAlias 'key0'
-            keyPassword '1234566'
-            storeFile file('../key.jks')
-            storePassword '1234566'
+            keyAlias 'aa'
+            keyPassword 'aaaaaa'
+            storeFile file('../aa.jks')
+            storePassword 'aaaaaa'
             v1SigningEnabled true
             v2SigningEnabled true
         }
