@@ -29,6 +29,9 @@ class BaseApplication : Application() {
     }
 
     private fun initBle() {
+        BleManager
+            .get()
+            .init(this)
 //        .options() //开启配置
 //            .setLogBleEnable(true) //设置是否输出打印蓝牙日志（非正式打包请设置为true，以便于调试）
 //            .setThrowBleException(true) //设置是否抛出蓝牙异常 （默认true）

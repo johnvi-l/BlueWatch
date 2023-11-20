@@ -39,11 +39,17 @@ class BlueToothAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         val item = bleDeviceList[position]
 
         holder.itemView.tvName.text = buildString {
-            append(item.deviceName)
+            append(
+                if (item.deviceName.isNullOrEmpty()) {
+                    "未知"
+                } else {
+                    item.deviceName
+                }
+            )
             append(", ")
             append(item.deviceAddress)
         }
-        holder.itemView.ivRssi.text = "${item.rssi ?: 0}"
+        holder.itemView.ivRssi.text = "信号:${item.rssi ?: 0}"
 //        val rssi = item.rssi ?: 0
 
         if (BleManager.get().isConnected(item)) {
@@ -68,11 +74,24 @@ class BlueToothAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         holder.itemView.btnOperate.setOnClickListener {
             listener?.disConnect(item)
         }
+        holder.itemView.btnOperate.setOnClickListener {
+            listener?.operate(item)
+        }
     }
 
     private var bleDeviceList: MutableList<BleDevice> = mutableListOf()
     fun setData(bleDeviceList: MutableList<BleDevice>) {
         this.bleDeviceList = bleDeviceList
+        notifyDataSetChanged()
+    }
+
+
+    fun getData(): MutableList<BleDevice> {
+        return bleDeviceList
+    }
+
+    fun addData(bleDevice: BleDevice) {
+        bleDeviceList.add(bleDevice)
         notifyDataSetChanged()
     }
 
@@ -85,6 +104,7 @@ class BlueToothAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         fun connect(bleDevice: BleDevice)
         fun disConnect(bleDevice: BleDevice)
 
+        fun operate(bleDevice: BleDevice)
     }
 
     fun clearData() {
