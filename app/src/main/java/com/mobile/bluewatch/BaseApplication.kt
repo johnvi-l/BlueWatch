@@ -1,6 +1,7 @@
 package com.mobile.bluewatch
 
 import android.app.Application
+import com.amap.api.location.AMapLocationClient
 import com.bhm.ble.BleManager
 import com.tencent.mmkv.MMKV
 import java.util.UUID
@@ -26,6 +27,12 @@ class BaseApplication : Application() {
         instance = this
         initMMKV()
         initBle()
+        initAMap()
+    }
+
+    private fun initAMap() {
+        AMapLocationClient.updatePrivacyShow(this,true,true);
+        AMapLocationClient.updatePrivacyAgree(this,true);
     }
 
     private fun initBle() {

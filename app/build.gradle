@@ -81,7 +81,7 @@ android {
 }
 //com.kv.callrecorder
 dependencies {
-
+    implementation files('libs/AMapLocation_6.4.0_20230815.aar')
     implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation 'com.google.android.material:material:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
@@ -113,4 +113,7 @@ dependencies {
     implementation 'com.github.buhuiming:BleCore:1.5.3'
     implementation 'com.github.tbruyelle:rxpermissions:0.12'
     implementation "io.github.vincent-series:smart-toast:4.0.8"
+
+//    implementation 'com.amap.api:location:latest.integration'
+
 }

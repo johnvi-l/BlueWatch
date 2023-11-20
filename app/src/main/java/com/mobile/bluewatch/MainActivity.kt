@@ -19,5 +19,12 @@ class MainActivity : AppCompatActivity() {
         binding.mainFunction.setOnClickListener {
             startActivity(Intent(this, BlueToothScanActivity::class.java))
         }
+
+        binding.location.setOnClickListener {
+            startActivity(Intent(this, LocationActivity::class.java))
+        }
+        binding.callphone.setOnClickListener {
+            startActivity(Intent(this,CallPhoneActivity::class.java))
+        }
     }
 }
