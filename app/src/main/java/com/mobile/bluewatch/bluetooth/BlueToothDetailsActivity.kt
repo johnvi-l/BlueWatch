@@ -120,7 +120,7 @@ class BlueToothDetailsActivity : AppCompatActivity() {
         fatigueValue: Int
     ) {
         val jsonObject = org.json.JSONObject()
-        jsonObject.put("heartDta", heartDta)
+        jsonObject.put("heartData", heartDta)
         jsonObject.put("systolicPressure", systolicPressure)
         jsonObject.put("diastolicPressure", diastolicPressure)
         jsonObject.put("respiratoryRate", respiratoryRate)

@@ -24,7 +24,10 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, LocationActivity::class.java))
         }
         binding.callphone.setOnClickListener {
-            startActivity(Intent(this,CallPhoneActivity::class.java))
+            startActivity(Intent(this, CallPhoneActivity::class.java))
+        }
+        binding.sheet.setOnClickListener {
+            startActivity(Intent(this, SheetActivity::class.java))
         }
     }
 }

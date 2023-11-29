@@ -2,6 +2,9 @@ package com.mobile.bluewatch.http;
 
 
 import com.mobile.bluewatch.bean.BaseBean;
+import com.mobile.bluewatch.bean.DeviceBean;
+
+import java.util.List;
 
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -20,6 +23,9 @@ public interface Api {
     Call<BaseBean<String>> registerBraceletUser(@Body RequestBody body);
 
 
-    @POST("bracelet/api/uploadInfo")
+    @POST("bracelet/api/pushBraceletDeviceInfo")
     Call<BaseBean<String>> uploadInfo(@Body RequestBody body);
+
+    @POST("bracelet/api/getBraceletDeviceInfo")
+    Call<BaseBean<List<DeviceBean>>> getBraceletDeviceInfo(@Body RequestBody body);
 }
