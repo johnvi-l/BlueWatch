@@ -1,15 +1,23 @@
 package com.mobile.bluewatch.bluetooth
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import com.bhm.ble.BleManager
 import com.bhm.ble.data.BleDescriptorGetType
 import com.bhm.ble.utils.BleUtil
+import com.mobile.bluewatch.BlueToothBindingActivity
+import com.mobile.bluewatch.bean.BaseBean
 import com.mobile.bluewatch.byteArrayToHexString
 import com.mobile.bluewatch.databinding.ActivityBlutToothDetailsBinding
+import com.mobile.bluewatch.http.RetrofitUtils
 import com.mobile.bluewatch.toHexWithSpaces
+import com.mobile.bluewatch.toast
 import com.mobile.bluewatch.utils.Analysis
+import com.tencent.mmkv.MMKV
+import okhttp3.MediaType
+import okhttp3.RequestBody
 
 class BlueToothDetailsActivity : AppCompatActivity() {
     private lateinit var binding: ActivityBlutToothDetailsBinding
@@ -48,10 +56,26 @@ class BlueToothDetailsActivity : AppCompatActivity() {
             }
 
 
-        binding.btn.setOnClickListener {
+        binding.back.setOnClickListener {
+            finish()
+        }
 
+        binding.binding.setOnClickListener {
+            if (deviceId.isNullOrEmpty()) {
+                "蓝牙设备未发送设备ID,请先发送设备ID".toast()
+                return@setOnClickListener
+            }
+            startActivity(
+                Intent(
+                    this@BlueToothDetailsActivity,
+                    BlueToothBindingActivity::class.java
+                )
+            )
         }
     }
+
+    private val mmkv = MMKV.defaultMMKV()
+    private var deviceId: String = ""
 
     private fun parseData(byteToString: String?) {
         if (!byteToString.isNullOrEmpty()) {
@@ -77,10 +101,59 @@ class BlueToothDetailsActivity : AppCompatActivity() {
             val respiratoryRate = splitData[4].toInt(16)
             val fatigueValue = splitData[5].toInt(16)
             val reservedByte = splitData[6].toInt(16)
+            if (reservedByte != 0) {
+                mmkv.encode("deviceId", reservedByte)
+            }
             binding.tv.text =
                 sb.append("心率: $heartDta 收缩压:${systolicPressure} 舒张压:${diastolicPressure} 呼吸:${respiratoryRate} 疲劳值:${fatigueValue}")
                     .append("\n")
+
+            uploadInfo(heartDta, systolicPressure, diastolicPressure, respiratoryRate, fatigueValue)
         }
+    }
+
+    private fun uploadInfo(
+        heartDta: Int,
+        systolicPressure: Int,
+        diastolicPressure: Int,
+        respiratoryRate: Int,
+        fatigueValue: Int
+    ) {
+        val jsonObject = org.json.JSONObject()
+        jsonObject.put("heartDta", heartDta)
+        jsonObject.put("systolicPressure", systolicPressure)
+        jsonObject.put("diastolicPressure", diastolicPressure)
+        jsonObject.put("respiratoryRate", respiratoryRate)
+        jsonObject.put("fatigueValue", fatigueValue)
+        jsonObject.put("deviceId", mmkv.decodeString("deviceId"))
+        jsonObject.put("guuid", "1")
+        val body = RequestBody.create(
+            MediaType.parse("application/json; charset=utf-8"),
+            jsonObject.toString()
+        )
+
+        RetrofitUtils
+            .getApi()
+            .uploadInfo(body)
+            .enqueue(object : retrofit2.Callback<BaseBean<String>> {
+                override fun onResponse(
+                    call: retrofit2.Call<BaseBean<String>>,
+                    response: retrofit2.Response<BaseBean<String>>
+                ) {
+                    Log.e("TAG", "onResponse: " + response.body().toString())
+//                    if (response.body()?.code == 200) {
+//                        "绑定成功".toast()
+//                        finish()
+//                    } else {
+//                        "绑定失败".toast()
+//                    }
+                }
+
+                override fun onFailure(call: retrofit2.Call<BaseBean<String>>, t: Throwable) {
+                    Log.d("jwl", "t:${t.message}")
+                }
+            })
+
     }
 
     //    fun parseData(byteArray: ByteArray){

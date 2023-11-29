@@ -4,10 +4,19 @@ import android.Manifest
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import com.amap.api.location.AMapLocation
 import com.amap.api.location.AMapLocationClient
 import com.amap.api.location.AMapLocationClientOption
+import com.mobile.bluewatch.bean.BaseBean
 import com.mobile.bluewatch.databinding.ActivityLocationBinding
+import com.mobile.bluewatch.http.RetrofitUtils
 import com.tbruyelle.rxpermissions3.RxPermissions
+import com.tencent.mmkv.MMKV
+import okhttp3.MediaType
+import okhttp3.RequestBody
+import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Response
 
 class LocationActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLocationBinding
@@ -41,6 +50,10 @@ class LocationActivity : AppCompatActivity() {
         val aMapLocationClient = AMapLocationClient(this)
         aMapLocationClient.setLocationListener {
             Log.d("jwl", "it:${it.toString()}")
+
+            uploadInfo(it)
+
+
             binding.tv.text = "信息:${it.latitude},${it.longitude}"
         }
 
@@ -57,6 +70,41 @@ class LocationActivity : AppCompatActivity() {
 
         aMapLocationClient.setLocationOption(aMapLocationClientOption)
         aMapLocationClient.startLocation()
+    }
+
+    private fun uploadInfo(it: AMapLocation?) {
+        val jsonObject = JSONObject()
+        jsonObject.put("mapLatitude", it?.latitude)
+        jsonObject.put("mapLongitude", it?.longitude)
+        jsonObject.put("deviceId", MMKV.defaultMMKV().decodeString("deviceId"))
+        jsonObject.put("guuid", "1")
+
+        val body = RequestBody.create(
+            MediaType.parse("application/json; charset=utf-8"),
+            jsonObject.toString()
+        )
+        RetrofitUtils
+            .getApi()
+            .registerBraceletUser(body)
+            .enqueue(object : retrofit2.Callback<BaseBean<String>> {
+                override fun onResponse(
+                    call: Call<BaseBean<String>>,
+                    response: Response<BaseBean<String>>
+                ) {
+                    Log.e("TAG", "onResponse: " + response.body().toString())
+                    if (response.body()?.code == 200) {
+                        "绑定成功".toast()
+                        finish()
+                    } else {
+                        "绑定失败".toast()
+                    }
+                }
+
+                override fun onFailure(call: Call<BaseBean<String>>, t: Throwable) {
+                    "绑定失败".toast()
+                }
+            })
+
     }
 
 }
