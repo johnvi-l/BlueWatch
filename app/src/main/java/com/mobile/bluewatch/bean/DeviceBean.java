@@ -1,59 +1,58 @@
 package com.mobile.bluewatch.bean;
 
 public class DeviceBean {
-    private String heartData;
-    private String systolicPressure ;
-    private String diastolicPressure ;
-    private String respiratoryRate ;
-    private String fatigueValue ;
-    private String time;
+    private int heartData;
+    private int systolicPressure ;
+    private int diastolicPressure ;
+    private int respiratoryRate ;
+    private int fatigueValue ;
+    private String createTime;
 
-
-    public String getHeartData() {
+    public int getHeartData() {
         return heartData;
     }
 
-    public void setHeartData(String heartData) {
+    public void setHeartData(int heartData) {
         this.heartData = heartData;
     }
 
-    public String getSystolicPressure() {
+    public int getSystolicPressure() {
         return systolicPressure;
     }
 
-    public void setSystolicPressure(String systolicPressure) {
+    public void setSystolicPressure(int systolicPressure) {
         this.systolicPressure = systolicPressure;
     }
 
-    public String getDiastolicPressure() {
+    public int getDiastolicPressure() {
         return diastolicPressure;
     }
 
-    public void setDiastolicPressure(String diastolicPressure) {
+    public void setDiastolicPressure(int diastolicPressure) {
         this.diastolicPressure = diastolicPressure;
     }
 
-    public String getRespiratoryRate() {
+    public int getRespiratoryRate() {
         return respiratoryRate;
     }
 
-    public void setRespiratoryRate(String respiratoryRate) {
+    public void setRespiratoryRate(int respiratoryRate) {
         this.respiratoryRate = respiratoryRate;
     }
 
-    public String getFatigueValue() {
+    public int getFatigueValue() {
         return fatigueValue;
     }
 
-    public void setFatigueValue(String fatigueValue) {
+    public void setFatigueValue(int fatigueValue) {
         this.fatigueValue = fatigueValue;
     }
 
-    public String getTime() {
-        return time;
+    public String getCreateTime() {
+        return createTime;
     }
 
-    public void setTime(String time) {
-        this.time = time;
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
     }
 }

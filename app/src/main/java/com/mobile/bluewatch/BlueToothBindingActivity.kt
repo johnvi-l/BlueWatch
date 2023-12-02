@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.kongzue.dialogx.dialogs.BottomMenu
 import com.kongzue.dialogx.interfaces.OnMenuItemClickListener
 import com.mobile.bluewatch.bean.BaseBean
+import com.mobile.bluewatch.bean.BindBean
 import com.mobile.bluewatch.databinding.ActivityBlueToothBindingBinding
 import com.mobile.bluewatch.http.RetrofitUtils
 import com.tencent.mmkv.MMKV
@@ -19,6 +20,7 @@ import kotlin.system.exitProcess
 class BlueToothBindingActivity : AppCompatActivity() {
     private lateinit var binding: ActivityBlueToothBindingBinding
     var sex = 1
+    private var deviceId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,7 +28,8 @@ class BlueToothBindingActivity : AppCompatActivity() {
         setContentView(binding.root)
 
 
-
+        deviceId = intent.getStringExtra("deviceId")
+        binding.deviceId.setText(deviceId)
 
         binding.sex.setOnClickListener {
             BottomMenu.show(arrayOf<String>("男", "女"))
@@ -35,13 +38,13 @@ class BlueToothBindingActivity : AppCompatActivity() {
                     if (text == "女") {
                         sex = 0
                     }
-                    binding.sex
-                        .setText(text.toString())
+                    binding.sex.text = text.toString()
                     false
                 }
         }
 
 
+        binding.back.setOnClickListener { finish() }
         binding.sure.setOnClickListener {
             val userPhone = binding.phone.text.toString()
             val userName = binding.nick.text.toString()
@@ -63,27 +66,24 @@ class BlueToothBindingActivity : AppCompatActivity() {
             jsonObject.put("emergencyContactPhone", emergencyContactPhone)
 
             val body = RequestBody.create(
-                MediaType.parse("application/json; charset=utf-8"),
-                jsonObject.toString()
+                MediaType.parse("application/json; charset=utf-8"), jsonObject.toString()
             )
-            RetrofitUtils
-                .getApi()
-                .registerBraceletUser(body)
-                .enqueue(object : retrofit2.Callback<BaseBean<String>> {
+            RetrofitUtils.getApi().registerBraceletUser(body)
+                .enqueue(object : retrofit2.Callback<BaseBean<BindBean>> {
                     override fun onResponse(
-                        call: Call<BaseBean<String>>,
-                        response: Response<BaseBean<String>>
+                        call: Call<BaseBean<BindBean>>, response: Response<BaseBean<BindBean>>
                     ) {
                         Log.e("TAG", "onResponse: " + response.body().toString())
-                        if (response.body()?.code == 200) {
+                        if (response.body()?.data?.guuid.isNullOrEmpty()) {
+                            "绑定失败".toast()
+                        } else {
+                            MMKV.defaultMMKV().encode("gguid", response.body()?.data?.guuid)
                             "绑定成功".toast()
                             finish()
-                        } else {
-                            "绑定失败".toast()
                         }
                     }
 
-                    override fun onFailure(call: Call<BaseBean<String>>, t: Throwable) {
+                    override fun onFailure(call: Call<BaseBean<BindBean>>, t: Throwable) {
                         "绑定失败".toast()
                     }
                 })

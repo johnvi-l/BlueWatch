@@ -2,6 +2,7 @@ package com.mobile.bluewatch.http;
 
 
 import com.mobile.bluewatch.bean.BaseBean;
+import com.mobile.bluewatch.bean.BindBean;
 import com.mobile.bluewatch.bean.DeviceBean;
 
 import java.util.List;
@@ -19,13 +20,17 @@ public interface Api {
 //    @POST("config")
 //    Call<BaseBean<ConfigBean>> config(@Body RequestBody body);
 
-    @POST("bracelet/api/registerBraceletUser")
-    Call<BaseBean<String>> registerBraceletUser(@Body RequestBody body);
+    @POST("gateway/bracelet/api/registerBraceletUser")
+    Call<BaseBean<BindBean>> registerBraceletUser(@Body RequestBody body);
 
 
-    @POST("bracelet/api/pushBraceletDeviceInfo")
+    @POST("gateway/bracelet/api/pushBraceletDeviceLog")
     Call<BaseBean<String>> uploadInfo(@Body RequestBody body);
 
-    @POST("bracelet/api/getBraceletDeviceInfo")
+    @POST("gateway/bracelet/api/getBraceletDeviceLogList")
     Call<BaseBean<List<DeviceBean>>> getBraceletDeviceInfo(@Body RequestBody body);
+
+
+    @POST("gateway/bracelet/api/pushBraceletMapLog")
+    Call<BaseBean<String>>pushBraceletMapLog(@Body RequestBody body);
 }

@@ -77,7 +77,7 @@ class LocationActivity : AppCompatActivity() {
         jsonObject.put("mapLatitude", it?.latitude)
         jsonObject.put("mapLongitude", it?.longitude)
         jsonObject.put("deviceId", MMKV.defaultMMKV().decodeString("deviceId"))
-        jsonObject.put("guuid", "1")
+        jsonObject.put("guuid", MMKV.defaultMMKV().decodeString("gguid"))
 
         val body = RequestBody.create(
             MediaType.parse("application/json; charset=utf-8"),
@@ -85,7 +85,7 @@ class LocationActivity : AppCompatActivity() {
         )
         RetrofitUtils
             .getApi()
-            .registerBraceletUser(body)
+            .pushBraceletMapLog(body)
             .enqueue(object : retrofit2.Callback<BaseBean<String>> {
                 override fun onResponse(
                     call: Call<BaseBean<String>>,
@@ -93,15 +93,12 @@ class LocationActivity : AppCompatActivity() {
                 ) {
                     Log.e("TAG", "onResponse: " + response.body().toString())
                     if (response.body()?.code == 200) {
-                        "绑定成功".toast()
-                        finish()
-                    } else {
-                        "绑定失败".toast()
+                        "上报成功".toast()
                     }
                 }
 
                 override fun onFailure(call: Call<BaseBean<String>>, t: Throwable) {
-                    "绑定失败".toast()
+                    "上报失败".toast()
                 }
             })
 

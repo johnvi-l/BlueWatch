@@ -115,5 +115,7 @@ dependencies {
     implementation "io.github.vincent-series:smart-toast:4.0.8"
 
 //    implementation 'com.amap.api:location:latest.integration'
+    implementation 'com.github.AnyChart:AnyChart-Android:1.1.0'
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
 }

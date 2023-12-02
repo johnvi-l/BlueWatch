@@ -18,6 +18,7 @@ import com.mobile.bluewatch.utils.Analysis
 import com.tencent.mmkv.MMKV
 import okhttp3.MediaType
 import okhttp3.RequestBody
+import org.json.JSONObject
 
 class BlueToothDetailsActivity : AppCompatActivity() {
     private lateinit var binding: ActivityBlutToothDetailsBinding
@@ -69,7 +70,7 @@ class BlueToothDetailsActivity : AppCompatActivity() {
                 Intent(
                     this@BlueToothDetailsActivity,
                     BlueToothBindingActivity::class.java
-                )
+                ).putExtra("deviceId", deviceId)
             )
         }
     }
@@ -102,7 +103,8 @@ class BlueToothDetailsActivity : AppCompatActivity() {
             val fatigueValue = splitData[5].toInt(16)
             val reservedByte = splitData[6].toInt(16)
             if (reservedByte != 0) {
-                mmkv.encode("deviceId", reservedByte)
+                deviceId = reservedByte.toString()
+                mmkv.encode("deviceId", deviceId)
             }
             binding.tv.text =
                 sb.append("心率: $heartDta 收缩压:${systolicPressure} 舒张压:${diastolicPressure} 呼吸:${respiratoryRate} 疲劳值:${fatigueValue}")
@@ -119,14 +121,14 @@ class BlueToothDetailsActivity : AppCompatActivity() {
         respiratoryRate: Int,
         fatigueValue: Int
     ) {
-        val jsonObject = org.json.JSONObject()
+        val jsonObject = JSONObject()
         jsonObject.put("heartData", heartDta)
         jsonObject.put("systolicPressure", systolicPressure)
         jsonObject.put("diastolicPressure", diastolicPressure)
         jsonObject.put("respiratoryRate", respiratoryRate)
         jsonObject.put("fatigueValue", fatigueValue)
         jsonObject.put("deviceId", mmkv.decodeString("deviceId"))
-        jsonObject.put("guuid", "1")
+        jsonObject.put("guuid", mmkv.decodeString("gguid"))
         val body = RequestBody.create(
             MediaType.parse("application/json; charset=utf-8"),
             jsonObject.toString()

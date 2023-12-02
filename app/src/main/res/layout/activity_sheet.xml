@@ -69,6 +69,7 @@
             android:background="#6f6f6f" />
 
         <TextView
+            android:id="@+id/sure"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_margin="10dp"
@@ -80,5 +81,13 @@
             android:textSize="18dp" />
     </LinearLayout>
 
+<!--    <com.anychart.AnyChartView-->
+<!--        android:id="@+id/chartView"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent" />-->
 
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/chartView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 </LinearLayout>
