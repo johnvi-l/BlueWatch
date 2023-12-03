@@ -160,7 +160,7 @@ class SheetActivity : AppCompatActivity() {
         val jsonObject = JSONObject()
         jsonObject.put("deviceId", MMKV.defaultMMKV().decodeString("deviceId"))
         jsonObject.put("deviceVersion", "1")
-        jsonObject.put("gguid", "1")
+        jsonObject.put("gguid", MMKV.defaultMMKV().decodeString("gguid"))
 
         val body = RequestBody.create(
             MediaType.parse("application/json; charset=utf-8"), jsonObject.toString()
