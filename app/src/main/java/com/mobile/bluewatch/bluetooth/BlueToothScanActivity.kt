@@ -101,11 +101,11 @@ class BlueToothScanActivity : AppCompatActivity() {
             Manifest.permission.BLUETOOTH_ADVERTISE,
             Manifest.permission.BLUETOOTH_CONNECT,
         ).subscribe { granted ->
-            if (granted) {
-                if (!BleUtil.isGpsOpen(this@BlueToothScanActivity)) {
-                    startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
-                    return@subscribe
-                }
+//            if (granted) {
+//                if (!BleUtil.isGpsOpen(this@BlueToothScanActivity)) {
+//                    startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+//                    return@subscribe
+//                }
 
                 if (BleManager.get().isScanning()) {
                     "正在扫描".toast()
@@ -155,10 +155,10 @@ class BlueToothScanActivity : AppCompatActivity() {
                         Toast.makeText(application, msg, Toast.LENGTH_SHORT).show()
                     }
                 }
-            } else {
-                "请赋予蓝牙权限".toast()
-                startActivity(Intent(Settings.ACTION_BLUETOOTH_SETTINGS))
-            }
+//            } else {
+//                "请赋予蓝牙权限".toast()
+//                startActivity(Intent(Settings.ACTION_BLUETOOTH_SETTINGS))
+//            }
         }
     }
 }

@@ -1,24 +1,26 @@
 package com.mobile.bluewatch.bluetooth
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import com.bhm.ble.BleManager
 import com.bhm.ble.data.BleDescriptorGetType
 import com.bhm.ble.utils.BleUtil
 import com.mobile.bluewatch.BlueToothBindingActivity
 import com.mobile.bluewatch.bean.BaseBean
-import com.mobile.bluewatch.byteArrayToHexString
 import com.mobile.bluewatch.databinding.ActivityBlutToothDetailsBinding
 import com.mobile.bluewatch.http.RetrofitUtils
-import com.mobile.bluewatch.toHexWithSpaces
 import com.mobile.bluewatch.toast
-import com.mobile.bluewatch.utils.Analysis
 import com.tencent.mmkv.MMKV
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.disposables.Disposable
+import io.reactivex.rxjava3.schedulers.Schedulers
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import org.json.JSONObject
+import java.util.concurrent.TimeUnit
 
 class BlueToothDetailsActivity : AppCompatActivity() {
     private lateinit var binding: ActivityBlutToothDetailsBinding
@@ -32,7 +34,7 @@ class BlueToothDetailsActivity : AppCompatActivity() {
         val bleDevice = BlueToothScanActivity.cbleDevice!!
 
         BleManager.get().getBluetoothGatt(bleDevice)
-            ?.services?.get(1)?.let {
+            ?.services?.get(0)?.let {
                 val serviceUUID = it.uuid.toString()
                 var characteristicsUUID = it.characteristics[0].uuid.toString()
                 BleManager.get().notify(
@@ -48,9 +50,7 @@ class BlueToothDetailsActivity : AppCompatActivity() {
                     onCharacteristicChanged {
                         //数据处理在IO线程，显示UI要切换到主线程
                         launchInMainThread {
-                            val byteToString = Analysis.getByteToString(it, "UTF-8", false, false)
-                            Log.d("jwlll", "byteToString:${byteToString}")
-                            parseData(byteToString)
+                            curByteArray = it
                         }
                     }
                 }
@@ -73,8 +73,31 @@ class BlueToothDetailsActivity : AppCompatActivity() {
                 ).putExtra("deviceId", deviceId)
             )
         }
+
+        initInterval()
     }
 
+    private var subscribe: Disposable? = null
+    private fun initInterval() {
+        subscribe = Observable
+            .interval(3000, 5 * 1000, TimeUnit.MILLISECONDS)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { it: Long ->
+                if (curByteArray != null) {
+                    val bytesToHex = BleUtil.bytesToHex(curByteArray)
+                    Log.d("jwlll", "byteToString:${bytesToHex}")
+                    parseData(bytesToHex)
+                }
+            }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        subscribe?.dispose()
+    }
+
+    private lateinit var curByteArray: ByteArray
     private val mmkv = MMKV.defaultMMKV()
     private var deviceId: String = ""
 
@@ -84,15 +107,15 @@ class BlueToothDetailsActivity : AppCompatActivity() {
             if (splitData.isEmpty()) {
                 return
             }
-            if (splitData.size != 8) {
+            if (splitData.size != 9) {
                 return
             }
             val headData = splitData[0]
-            if (headData != "A1") {
+            if (headData != "a1") {
                 return
             }
             val tailData = splitData[7]
-            if (tailData != "A0") {
+            if (tailData != "a0") {
                 return
             }
 

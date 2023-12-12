@@ -29,5 +29,7 @@ class MainActivity : AppCompatActivity() {
         binding.sheet.setOnClickListener {
             startActivity(Intent(this, SheetActivity::class.java))
         }
+
+        binding.version.text = "版本:${packageManager.getPackageInfo(packageName, 0).versionName}"
     }
 }
