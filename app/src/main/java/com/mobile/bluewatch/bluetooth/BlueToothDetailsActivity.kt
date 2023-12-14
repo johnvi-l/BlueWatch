@@ -51,6 +51,9 @@ class BlueToothDetailsActivity : AppCompatActivity() {
                         //数据处理在IO线程，显示UI要切换到主线程
                         launchInMainThread {
                             curByteArray = it
+
+                            val bytesToHex = BleUtil.bytesToHex(curByteArray)
+                            Log.d("test", "1111111:${bytesToHex}")
                         }
                     }
                 }
@@ -123,8 +126,8 @@ class BlueToothDetailsActivity : AppCompatActivity() {
             val systolicPressure = splitData[2].toInt(16)
             val diastolicPressure = splitData[3].toInt(16)
             val respiratoryRate = splitData[4].toInt(16)
-            val fatigueValue = splitData[5].toInt(16)
-            val reservedByte = splitData[6].toInt(16)
+            val reservedByte = splitData[5].toInt(16)
+            val fatigueValue = splitData[6].toInt(16)
             if (reservedByte != 0) {
                 deviceId = reservedByte.toString()
                 mmkv.encode("deviceId", deviceId)
