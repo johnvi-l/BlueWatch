@@ -51,9 +51,8 @@ class BlueToothDetailsActivity : AppCompatActivity() {
                         //数据处理在IO线程，显示UI要切换到主线程
                         launchInMainThread {
                             curByteArray = it
-
-                            val bytesToHex = BleUtil.bytesToHex(curByteArray)
-                            Log.d("test", "1111111:${bytesToHex}")
+//                            val bytesToHex = BleUtil.bytesToHex(curByteArray)
+//                            Log.d("test", "1111111:${bytesToHex}")
                         }
                     }
                 }
