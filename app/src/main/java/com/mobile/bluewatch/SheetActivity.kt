@@ -92,7 +92,7 @@ class SheetActivity : AppCompatActivity() {
                             list.add(Entry(index.toFloat(), deviceBean.diastolicPressure.toFloat()))
                         } else if (toString == "呼吸") {
                             list.add(Entry(index.toFloat(), deviceBean.respiratoryRate.toFloat()))
-                        } else if (toString == "呼吸") {
+                        } else if (toString == "疲劳值") {
                             list.add(Entry(index.toFloat(), deviceBean.fatigueValue.toFloat()))
                         }
                     }
